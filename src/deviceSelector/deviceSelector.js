@@ -24,7 +24,6 @@ const DeviceSelector = (props) => {
       });
 
       useEffect(()=>{
-        console.log("BOYO");
         navigator.mediaDevices.getUserMedia(mediaConstraints)
         .then((stream) => {
             setStreamData({sourceStream: stream, isSet: true});
