@@ -5,12 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "firefox",
+            "name": "Launch Chrome",
             "request": "launch",
-            "name": "Launch Firefox against localhost",
+            "type": "pwa-chrome",
             "url": "http://localhost:3000",
-            "reAttach": true,
             "webRoot": "${workspaceFolder}"
-        }
+        },
+    {
+        "name": "Attach to Chrome",
+        "port": 9222,
+        "request": "attach",
+        "type": "pwa-chrome",
+        "webRoot": "${workspaceFolder}"
+    }
     ]
 }

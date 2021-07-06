@@ -5,7 +5,6 @@ const initialState = {
     isSet: false
 };
 
-
 const DeviceSelector = (props) => {
     const videoRef = useRef();
     const [streamData, setStreamData] = useState(initialState);
@@ -34,7 +33,7 @@ const DeviceSelector = (props) => {
         
 
       return (
-          <video ref={videoRef} autoplay={"autoplay"}/>
+          <video ref={videoRef} autoPlay={"autoPlay"}/>
       );
 }
 

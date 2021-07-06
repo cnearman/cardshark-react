@@ -1,19 +1,16 @@
 import logo from './logo.svg';
 import './App.css';
 import DeviceSelector from './deviceSelector/deviceSelector';
-
-import io from "socket.io-client";
-
-const socket = io("ws://localhost:8081", {
-  transports: ['websocket']
-});
-
-socket.connect();
+import VideoContainer  from './videoContainer/videoContainer';
+import WebSocketProvider, {WebSocketContext} from './providers/socketProvider';
 
 function App() {
   return (
     <div className="App">
-      <DeviceSelector/>
+      <WebSocketProvider>
+        <VideoContainer/>
+        <DeviceSelector/>
+      </WebSocketProvider>
     </div>
   );
 }
