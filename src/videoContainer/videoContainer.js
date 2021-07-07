@@ -3,9 +3,6 @@ import { WebSocketContext } from "../providers/socketProvider";
 
 const VideoContainer = () => {
     const socketProvider = useContext(WebSocketContext);
-    socketProvider.socket.on('begin_peer_connection', (config) => {
-        console.log('Received begin_peer_connection');
-    });
 
     return (
         <div>
