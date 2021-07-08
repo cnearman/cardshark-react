@@ -1,6 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { addLocalStream } from '../streamManager/streamSlice';
+import { useState, useRef, useEffect, useContext } from 'react';
+import { StateContext } from '../stateContainer/stateContainer';
 
 const initialState = {
     sourceStream: null,
@@ -8,9 +7,10 @@ const initialState = {
 };
 
 const DeviceSelector = (props) => {
-    const dispatch = useDispatch();
     const videoRef = useRef();
     const [streamData, setStreamData] = useState(initialState);
+    
+    const stateContext = useContext(StateContext);
 
     var mediaConstraints = {
         audio: true, 
@@ -30,7 +30,7 @@ const DeviceSelector = (props) => {
         .then((stream) => {
             setStreamData({sourceStream: stream, isSet: true});
             videoRef.current.srcObject = stream;
-            dispatch(addLocalStream(stream));
+            stateContext.setLocalStream(stream);
             var rec = new MediaRecorder(stream);
         });
       }, []);
