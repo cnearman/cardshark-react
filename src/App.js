@@ -1,19 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
 import DeviceSelector from './deviceSelector/deviceSelector';
-
-import io from "socket.io-client";
-
-const socket = io("ws://localhost:8081", {
-  transports: ['websocket']
-});
-
-socket.connect();
+import VideoContainer  from './videoContainer/videoContainer';
+import WebSocketProvider from './providers/socketProvider';
+import StateContainer from './stateContainer/stateContainer';
+ 
+import store from './store'
+import { Provider } from 'react-redux'
 
 function App() {
   return (
     <div className="App">
-      <DeviceSelector/>
+    <StateContainer>
+      <Provider store={store}>
+        <WebSocketProvider>
+          <VideoContainer/>
+          <DeviceSelector/>
+        </WebSocketProvider>
+      </Provider>
+    </StateContainer>
     </div>
   );
 }
