@@ -14,8 +14,8 @@ const VideoContainer = (props) => {
             <div>{state.localStream? "Has Local Stream" : "No Local Stream"}</div>
             <div>Remote Connections: {state.videoStreams.length}</div>
             
-            { state.videoStreams.map((value) => {
-                return <VideoElement stream={value}/>
+            { state.videoStreams.map((value, index) => {
+                return <VideoElement key={index} stream={value}/>
             })}
         </div>
     );

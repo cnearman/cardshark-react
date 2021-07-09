@@ -3,7 +3,7 @@ import {useEffect, useRef} from 'react';
 const VideoElement = (props) => {
     const videoRef = useRef();
     useEffect(()=> {
-        videoRef.current.srcObject = props.stream;
+        videoRef.current.srcObject = new MediaStream([props.stream]);
     }, [props.stream]);
 
     return(        
