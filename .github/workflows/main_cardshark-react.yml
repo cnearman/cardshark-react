@@ -34,6 +34,6 @@ jobs:
       with:
         app-name: cardshark-react
         slot-name: Production
-        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7487AA2CFB014305B683593D7D6CA283 }}
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D0088EFAAFD14769B4538644C8B6B61B }}
         package: .
 
