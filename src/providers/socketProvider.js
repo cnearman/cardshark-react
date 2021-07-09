@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect} from 'react';
 import io from 'socket.io-client';
 import { StateContext } from '../stateContainer/stateContainer';
 
@@ -13,15 +13,12 @@ const ICE_SERVERS = [
 const peers = {};
 const state = {};
 
-export default ({children}) => {
+const SocketProvider = ({children}) => {
 
     const streamContext = useContext(StateContext);
 
-    const [localStream, setLocalStream] = useState(null);
-
     useEffect(()=>{
         console.log(`setting localstream to ${streamContext.localStream}`);
-        setLocalStream(streamContext.localStream);
         state.localStream = streamContext.localStream;
     }, [streamContext])
 
@@ -34,12 +31,8 @@ export default ({children}) => {
         streamContext.addRemoteStream(stream);
     };
 
-    const getLocalStream = () => {
-        return streamContext.localStream;
-    }
-
     if(!state.socket) {
-        state.socket = io("ws://localhost:8081", {
+        state.socket = io(process.env.ServerConnectionString || "ws://localhost:8081", {
             transports: ['websocket']
         });
         
@@ -159,3 +152,5 @@ export default ({children}) => {
         </WebSocketContext.Provider>
     );
 }
+
+export default SocketProvider;

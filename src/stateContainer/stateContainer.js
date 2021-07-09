@@ -9,7 +9,7 @@ const StateContext = createContext({
 
 export { StateContext }
 
-export default ({children}) => {
+const StateProvider = ({children}) => {
 
     const setLocalStream = (stream) =>{
         console.log('setting local stream');
@@ -36,3 +36,5 @@ export default ({children}) => {
         </StateContext.Provider>
     );
 }
+
+export default StateProvider;
