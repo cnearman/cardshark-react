@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect} from 'react';
 import io from 'socket.io-client';
 import { StateContext } from '../stateContainer/stateContainer';
-const secrets = require('../secrets.json');
+const secrets = require('../../secrets.json');
 
 const WebSocketContext = createContext(null);
 
