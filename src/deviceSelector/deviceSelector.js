@@ -1,15 +1,10 @@
-import {  useRef, useEffect, useContext } from 'react';
+import {  useRef, useEffect, useContext, useState } from 'react';
 import { StateContext } from '../stateContainer/stateContainer';
 
 const DeviceSelector = (props) => {
     const videoRef = useRef();
-    
+    const [isStreamSet, setIsStreamSet] = useState(false);
     const stateContext = useContext(StateContext);
-
-    var mediaConstraints = {
-        audio: true, 
-        video: true
-      };
 
       navigator.mediaDevices.enumerateDevices()
       .then((devices) => {
@@ -20,13 +15,22 @@ const DeviceSelector = (props) => {
       });
 
       useEffect(()=>{
+
+        var mediaConstraints = {
+            audio: true, 
+            video: true
+        };
+
         navigator.mediaDevices.getUserMedia(mediaConstraints)
         .then((stream) => {
+          if (!isStreamSet) {
             videoRef.current.srcObject = stream;
             stateContext.setLocalStream(stream);
-            var rec = new MediaRecorder(stream);
+            //var rec = new MediaRecorder(stream);
+            setIsStreamSet(true);
+          }
         });
-      }, []);
+      }, [stateContext, isStreamSet]);
         
 
       return (
