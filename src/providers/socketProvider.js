@@ -33,7 +33,7 @@ const SocketProvider = ({children}) => {
     };
 
     if(!state.socket) {
-        state.socket = io(secrets.ServerConnectionString || "ws://localhost:8081", {
+        state.socket = io(process.env.ServerConnectionString || secrets.ServerConnectionString || "ws://localhost:8081", {
             transports: ['websocket']
         });
         
