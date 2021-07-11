@@ -14,6 +14,7 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -29,10 +30,10 @@ jobs:
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "/" # App source code path
           api_location: "" # Api source code path - optional
-          files: 'src/secrets.json'
         env: # Add environment variables here
           ServerConnectionString: ${{ secrets.SERVERCONNECTIONSTRING }}
           ###### End of Repository/Build Configurations ######
+    
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
