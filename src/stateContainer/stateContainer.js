@@ -1,37 +1,39 @@
 import { createContext, useState } from 'react';
 
-const StateContext = createContext({
-    videoStreams : [],
-    localStream : null,
-    setLocalStream : () => {},
-    addRemoteStream : () => {}
-});
+const StateContext = createContext(null);
 
 export { StateContext }
 
 const StateProvider = ({children}) => {
+    const [remoteStreams, setRemoteStreams] = useState(() => {console.log('Initialize Remote Streams'); return [];});
 
-    const setLocalStream = (stream) =>{
-        console.log('setting local stream');
-        setState({...state, localStream: stream});
+    const [localStreamObject, setLocalStreamObject] = useState(() => {console.log('Initialize Local Stream'); return null;});
+
+    const setLocalStream = (stream) => {
+        console.log('LocalStream: ' + localStreamObject);
+        setLocalStreamObject(stream);
     }
 
     const addRemoteStream = (stream) => {
         console.log('adding remote stream');
-        setState({...state, videoStreams: [...state.videoStreams, stream]})
+        console.log('Number of connections: ' + remoteStreams.length);
+        setRemoteStreams(previousValue => [...previousValue, stream]);
     }
 
-    const initialState = {
-        videoStreams : [],
-        localStream : null,
-        setLocalStream: setLocalStream,
-        addRemoteStream: addRemoteStream
+    const getLocalStream = () => {
+        console.log('LocalStream: ' + localStreamObject);
+        return localStreamObject;
     }
 
-    const [state, setState] = useState(initialState);
+    const getRemoteStreams = () => {
+        return remoteStreams;
+    }
 
     return (
-        <StateContext.Provider value={ state }>
+        <StateContext.Provider value={{ getRemoteStreams,
+            setLocalStream, 
+            addRemoteStream,
+            getLocalStream }}>
             {children}
         </StateContext.Provider>
     );

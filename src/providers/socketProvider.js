@@ -19,8 +19,8 @@ const SocketProvider = ({children}) => {
     const streamContext = useContext(StateContext);
 
     useEffect(()=>{
-        console.log(`setting localstream to ${streamContext.localStream}`);
-        state.localStream = streamContext.localStream;
+        console.log(`setting localstream to ${streamContext.getLocalStream()}`);
+        state.localStream = streamContext.getLocalStream();
     }, [streamContext])
 
     const beginConnection = (channelId) => {
