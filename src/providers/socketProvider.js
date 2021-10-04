@@ -27,9 +27,9 @@ const SocketProvider = ({children}) => {
         state.socket.emit("join_channel", {channel: channelId}); 
     };
 
-    const addStream = (stream) => {
+    const addStream = (streamId, stream) => {
         console.log('Adding Remote Stream from addStream');
-        streamContext.addRemoteStream(stream);
+        streamContext.addRemoteStream(streamId, stream);
     };
 
     if(!state.socket) {
@@ -69,7 +69,7 @@ const SocketProvider = ({children}) => {
             peer_connection.addEventListener('track', function(event) {
                 console.log('Peer Connection - On Add Stream', event);
                 if (event.track.kind === 'video'){
-                    addStream(event.track);
+                    addStream(peer_socket_id, event.track);
                 }
             });
 
@@ -140,6 +140,18 @@ const SocketProvider = ({children}) => {
 
         state.socket.on('connect', () => {
             console.log(`Connected to server. Socket Id: ${state.socket.id}`);
+        });
+
+        state.socket.on('removePeer', function(config) {
+            console.log('Signaling server said to remove peer:', config);
+            var peer_id = config.peer_id;
+            streamContext.removeRemoteStream(peer_id);
+
+            if (peer_id in peers) {
+                peers[peer_id].close();
+            }
+
+            delete peers[peer_id];
         });
 
         state.socketService = {

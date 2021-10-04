@@ -5,7 +5,7 @@ const StateContext = createContext(null);
 export { StateContext }
 
 const StateProvider = ({children}) => {
-    const [remoteStreams, setRemoteStreams] = useState(() => {console.log('Initialize Remote Streams'); return [];});
+    const [remoteStreams, setRemoteStreams] = useState(() => {console.log('Initialize Remote Streams'); return {};});
 
     const [localStreamObject, setLocalStreamObject] = useState(() => {console.log('Initialize Local Stream'); return null;});
 
@@ -14,10 +14,26 @@ const StateProvider = ({children}) => {
         setLocalStreamObject(stream);
     }
 
-    const addRemoteStream = (stream) => {
+    const addRemoteStream = (streamId, stream) => {
         console.log('adding remote stream');
         console.log('Number of connections: ' + remoteStreams.length);
-        setRemoteStreams(previousValue => [...previousValue, stream]);
+        setRemoteStreams(previousValue => ({...previousValue, [streamId] : stream}));
+    }
+
+    const removeRemoteStream = (streamId) => {
+        setRemoteStreams(previousValue => {
+            let result = { ...previousValue}; 
+            if (result[streamId]) {
+                try {
+                    result[streamId].close(); 
+                }
+                catch {
+                    console.log("Error in calling close");
+                }
+                delete result[streamId]; 
+            }
+            return result;
+        })
     }
 
     const getLocalStream = () => {
@@ -26,13 +42,14 @@ const StateProvider = ({children}) => {
     }
 
     const getRemoteStreams = () => {
-        return remoteStreams;
+        return Object.values(remoteStreams);
     }
 
     return (
         <StateContext.Provider value={{ getRemoteStreams,
             setLocalStream, 
             addRemoteStream,
+            removeRemoteStream,
             getLocalStream }}>
             {children}
         </StateContext.Provider>
