@@ -1,15 +1,12 @@
 import { createContext, useContext, useEffect} from 'react';
 import io from 'socket.io-client';
 import { StateContext } from '../stateContainer/stateContainer';
+import axios from 'axios';
 const secrets = require('../secrets.json');
 
 const WebSocketContext = createContext(null);
 
 export { WebSocketContext }
-
-const ICE_SERVERS = [
-    {url:"stun:stun.l.google.com:19302"}
-];
 
 const peers = {};
 const state = {};
@@ -17,6 +14,13 @@ const state = {};
 const SocketProvider = ({children}) => {
 
     const streamContext = useContext(StateContext);
+
+    useEffect(() => {
+        axios.get('http://localhost:8081/turn/')
+        .then(res => {
+            state.iceServers = res.data.iceServers; 
+        });
+    }, [])
 
     useEffect(()=>{
         console.log(`setting localstream to ${streamContext.getLocalStream()}`);
@@ -47,7 +51,7 @@ const SocketProvider = ({children}) => {
             }
 
             var peer_connection = new RTCPeerConnection(
-                {"iceServers": ICE_SERVERS},
+                {"iceServers": state.iceServers},
                 {"optional": [{"DtlsSrtpKeyAgreement": true}]}
             );
 
