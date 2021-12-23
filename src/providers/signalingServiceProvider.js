@@ -4,19 +4,19 @@ import { StateContext } from '../stateContainer/stateContainer';
 import axios from 'axios';
 const secrets = require('../secrets.json');
 
-const WebSocketContext = createContext(null);
+const SignalingServiceContext = createContext(null);
 
-export { WebSocketContext }
+export { SignalingServiceContext }
 
 const peers = {};
 const state = {};
 
-const SocketProvider = ({children}, socketConfigurator) => {
+const SignalingServiceProvider = ({children}) => {
 
     const streamContext = useContext(StateContext);
 
     useEffect(() => {
-        axios.get('http://localhost:8081/turn/')
+        axios.get(process.env.IceServerEndpoint || secrets.IceServerEndpoint ||'http://localhost:8081/turn/')
         .then(res => {
             state.iceServers = res.data.iceServers; 
         });
@@ -164,10 +164,10 @@ const SocketProvider = ({children}, socketConfigurator) => {
         };
     }
     return (
-        <WebSocketContext.Provider value={ state.socketService }>
+        <SignalingServiceContext.Provider value={ state.socketService }>
             {children}
-        </WebSocketContext.Provider>
+        </SignalingServiceContext.Provider>
     );
 }
 
-export default SocketProvider;
+export default SignalingServiceProvider;
