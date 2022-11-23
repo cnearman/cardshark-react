@@ -2,6 +2,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import JoinPage from "./pages/JoinPage";
+import LoginPage from './pages/login';
+import IndexPage from './pages';
 
 export const siteMap = {
     JoinPage: {
@@ -13,6 +15,11 @@ export const siteMap = {
         title: 'Chat Page',
         path: '/chat/:session_id',
         description: 'My sub page'
+    },
+    LoginPage: {
+        title: 'Login Page',
+        path: '/login',
+        description: 'Login page'
     }
 }
 
@@ -22,9 +29,10 @@ export const siteMap = {
  */
 const RouteList = () => (
     <Routes>
-        <Route exact path="/" element={<h1>INDEX</h1>} />
+        <Route exact path="/" element={<IndexPage/>} />
         <Route exact path={siteMap.JoinPage.path} element={<JoinPage/>} />
         <Route exact path={siteMap.ChatPage.path} element={<JoinPage/>} />
+        <Route exact path={siteMap.LoginPage.path} element={<LoginPage/>} />
     </Routes>
 );
 
