@@ -29,6 +29,11 @@ const GameStateProvider = ({children}) => {
     const newSession = () => {        
         state.socket.emit("new_session"); 
     }
+
+    const joinSession = (sessionId, name) => {
+        state.socket.emit("join_session", {sessionId: sessionId, name: name})
+    }
+
     const saveSessionId = (sessionId) => {
         setSessionId(sessionId);
         console.log(sessionId);
@@ -51,9 +56,15 @@ const GameStateProvider = ({children}) => {
         state.socket.on('removePeer', function(config) {
         });
 
+        state.socket.on('updateState', function(newState) {
+            state.gameState = newState;
+        })
+
         state.socketService = {
             socket : state.socket,
-            newSession
+            gameState : state.gameState, 
+            newSession,
+            joinSession
         };
     }
     return (
