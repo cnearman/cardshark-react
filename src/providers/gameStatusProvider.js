@@ -41,6 +41,11 @@ const GameStateProvider = ({children}) => {
             state.socket.on('connect', () => {
                 console.log(`Connected to server. Socket Id: ${state.socket.id}`);
             }); 
+
+            state.socket.on('navigate', (body) => {
+                console.log(`Received navigate event to ${body.path}`);
+                navigate(body.path);
+            });
     
             state.socket.on('removePeer', function(config) {
             });
