@@ -21,6 +21,10 @@ const ChatPage = () => {
     return <div>Unauthenticated</div>
   }
 
+  if (!gameStateContext.gameState) {
+    return <div>Loading...</div>
+  }
+
   return (
     (
       <div>

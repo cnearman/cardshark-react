@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import { StateContext } from '../stateContainer/stateContainer';
 import { useNavigate } from "react-router-dom";
 import {useDidMountEffect} from '../hooks/useDidMountEffect'
+import { useAuth0 } from '@auth0/auth0-react';
 const secrets = require('../secrets.json');
 
 const GameStateContext = createContext(null);
@@ -12,15 +13,50 @@ export { GameStateContext }
 const state = {};
 
 const GameStateProvider = ({children}) => {
-
+    const {getAccessTokenSilently} = useAuth0();
     const navigate = useNavigate();
     const streamContext = useContext(StateContext);
     const [sessionId, setSessionId] = useState();
+    const [authToken, setAuthtoken] = useState();
 
     useEffect(()=>{
         console.log(`setting localstream to ${streamContext.getLocalStream()}`); 
         state.localStream = streamContext.getLocalStream();
     }, [streamContext]);
+
+    useEffect(() => {
+        console.log(`AuthToken: ${authToken}`);
+        if(!state.socket) {
+            console.log(`Access token: ${token}`)
+            state.socket = io(process.env.GameStateServiceConnectionString || secrets.GameStateServiceConnectionString || "ws://localhost:8082", {
+                transports: ['websocket'],
+                //query: `auth_token=${token}`
+            });
+            
+            state.socket.on('join_session', (config) => {
+                saveSessionId(config.session_id)
+            });
+    
+    
+            state.socket.on('connect', () => {
+                console.log(`Connected to server. Socket Id: ${state.socket.id}`);
+            }); 
+    
+            state.socket.on('removePeer', function(config) {
+            });
+    
+            state.socket.on('updateState', function(newState) {
+                state.gameState = newState;
+            })
+    
+            state.socketService = {
+                socket : state.socket,
+                gameState : state.gameState, 
+                newSession,
+                joinSession
+            };
+        }
+    }, [authToken]);
 
     useDidMountEffect(() =>{
         navigate(`chat/${sessionId}`);
@@ -39,34 +75,8 @@ const GameStateProvider = ({children}) => {
         console.log(sessionId);
     };
 
-    if(!state.socket) {
-        state.socket = io(process.env.GameStateServiceConnectionString || secrets.GameStateServiceConnectionString || "ws://localhost:8082", {
-            transports: ['websocket']
-        });
-        
-        state.socket.on('join_session', (config) => {
-            saveSessionId(config.session_id)
-        });
+    let token = getAccessTokenSilently().then(setAuthtoken);
 
-
-        state.socket.on('connect', () => {
-            console.log(`Connected to server. Socket Id: ${state.socket.id}`);
-        }); 
-
-        state.socket.on('removePeer', function(config) {
-        });
-
-        state.socket.on('updateState', function(newState) {
-            state.gameState = newState;
-        })
-
-        state.socketService = {
-            socket : state.socket,
-            gameState : state.gameState, 
-            newSession,
-            joinSession
-        };
-    }
     return (
         <GameStateContext.Provider value={ state.socketService }>
             {children}
